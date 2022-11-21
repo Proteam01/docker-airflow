@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+
+  python:
+    image: 'python:3.9.15-bullseye'
+    build:
+      context: .
+      dockerfile: airflow.dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src:/app
+    command: [ "airflow", "standalone" ]
