@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 
 services:
 
@@ -12,3 +12,30 @@ services:
     volumes:
       - ./src:/app
     command: [ "airflow", "standalone" ]
+    depends_on:
+      - postgres
+    networks:
+      - default-network
+    environment:
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+
+  postgres:
+    image: postgres:13.9
+    restart: always
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_DB: airflow
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - default-network
+
+networks:
+  default-network:
+    driver: bridge

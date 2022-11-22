@@ -1,1 +1,2 @@
 apache-airflow==2.4.3
+psycopg2
